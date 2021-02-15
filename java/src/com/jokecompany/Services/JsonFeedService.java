@@ -23,11 +23,10 @@ public class JsonFeedService implements IJsonFeedService {
     private UserIOHelper userIOHelper = new UserIOHelper();
 
     /**
-     *
      * @param firstname the first name from a random name api call, will replace the original first name
-     * @param lastname the last name from a random name api call, will replase the original last name
-     * @param gender gender from the random name api call, if female, pronouns will be replaced accordingly
-     * @param category category from user input
+     * @param lastname  the last name from a random name api call, will replase the original last name
+     * @param gender    gender from the random name api call, if female, pronouns will be replaced accordingly
+     * @param category  category from user input
      * @return
      */
     @Override
@@ -56,14 +55,13 @@ public class JsonFeedService implements IJsonFeedService {
             joke = replaceName(joke, fullName);
         }
         //replace pronoun
-        if (gender!=null&&gender.equals("female")) {
+        if (gender != null && gender.equals("female")) {
             joke = replacePronoun(joke);
         }
         return joke;
     }
 
     /**
-     *
      * @return make an api call to get person model which includes first name, last name, gender and region
      */
     @Override
@@ -82,7 +80,6 @@ public class JsonFeedService implements IJsonFeedService {
 
 
     /**
-     *
      * @return make an api call to get list of categories.
      */
     @Override
@@ -99,7 +96,6 @@ public class JsonFeedService implements IJsonFeedService {
     }
 
     /**
-     *
      * @param joke the original joke from api call, the original name in it will be replased.
      * @param name the new name that's replacing the original name
      * @return String of the new joke with new names in it
@@ -116,7 +112,6 @@ public class JsonFeedService implements IJsonFeedService {
     }
 
     /**
-     *
      * @param joke The original joke whose pronouns will be replaced if the new model is female
      * @return String of the new joke with new pronouns in it
      */

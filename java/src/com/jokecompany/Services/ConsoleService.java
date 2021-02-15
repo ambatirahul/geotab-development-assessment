@@ -6,7 +6,6 @@ import com.jokecompany.Models.PersonModel;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.jokecompany.Constants.JsonFeedConsts.*;
@@ -20,12 +19,13 @@ public class ConsoleService implements IConsoleService {
     private String lastName;
     private UserIOHelper userIOHelper = new UserIOHelper();
     private String gender;
-    private  List<String> categoryResult = null;
+    private List<String> categoryResult = null;
 
     private String selectedCategory;
 
     /**
-     * Starts the console application, by prompting user instructions
+     * Starts the console application, by prompting user instructions.
+     *
      * @throws IOException
      */
     public void startJokeCompany() throws IOException {
@@ -43,32 +43,28 @@ public class ConsoleService implements IConsoleService {
                 }
                 key = userIOHelper.getUserInputAndValidate(c, "yesOrNo", PROMPT_SPICIFYCATE).charAt(0);
                 if (key == 'y') {
-                    selectedCategory=userIOHelper.getUserInputAndValidate(c, PROMPT_ENTERCATE);
+                    selectedCategory = userIOHelper.getUserInputAndValidate(c, PROMPT_ENTERCATE);
                 }
                 key = userIOHelper.getUserInputAndValidate(c, "numbers", PROMPT_NUMBEROFJOKE).charAt(0);
                 int n = Character.getNumericValue(key);
                 getRandomJokes(selectedCategory, n);
             }
-
         }
     }
 
     /**
-     *
      * @param category category from user input
-     * @param number how many jokes would the user like
+     * @param number   how many jokes would the user like
      */
     @Override
     public void getRandomJokes(String category, int number) {
         for (int i = 0; i < number; i++) {
             if (fullName != null && !fullName.isEmpty()) {
-//                var var1 = names.entrySet().iterator().next();
-                oneJoke = new JsonFeedService().getRandomJokes(firstName, lastName, gender,category);
-                userIOHelper.printJoke(oneJoke);
+                oneJoke = new JsonFeedService().getRandomJokes(firstName, lastName, gender, category);
             } else {
-                oneJoke = new JsonFeedService().getRandomJokes(null, null, null,category);
-                userIOHelper.printJoke(oneJoke);
+                oneJoke = new JsonFeedService().getRandomJokes(null, null, null, category);
             }
+            userIOHelper.printJoke(oneJoke);
         }
     }
 
@@ -90,7 +86,7 @@ public class ConsoleService implements IConsoleService {
         PersonModel personModel = new JsonFeedService().getRandomNames();
         firstName = personModel.getName();
         lastName = personModel.getSurname();
-        gender =personModel.getGender();
-        fullName=(personModel.getName()+" "+personModel.getSurname());
+        gender = personModel.getGender();
+        fullName = (personModel.getName() + " " + personModel.getSurname());
     }
 }
