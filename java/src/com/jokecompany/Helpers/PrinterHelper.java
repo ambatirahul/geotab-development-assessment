@@ -1,10 +1,11 @@
-package com.jokecompany;
+package com.jokecompany.Helpers;
 
-public class ConsolePrinter {
+public class PrinterHelper {
     public static Object PrintValue;
 
-    public ConsolePrinter Value(String value)
+    public PrinterHelper Value(String value)
     {
+
         PrintValue = value;
         return this;
     }
