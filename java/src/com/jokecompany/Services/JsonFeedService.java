@@ -7,6 +7,7 @@ import static com.jokecompany.Constants.JsonFeedConsts.*;
 import com.jokecompany.Helpers.UserIOHelper;
 import com.jokecompany.Models.PersonModel;
 import com.jokecompany.Models.JokeModel;
+import org.junit.experimental.categories.Categories;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,7 +21,8 @@ import java.util.List;
 public class JsonFeedService implements IJsonFeedService {
 
     private static final HttpClient CLIENT = HttpClient.newHttpClient();
-    private UserIOHelper userIOHelper = new UserIOHelper();
+    private RequestBuilder requestBuilder = new RequestBuilder();
+//    private UserIOHelper userIOHelper = new UserIOHelper();
 
     /**
      * @param firstname the first name from a random name api call, will replace the original first name
@@ -40,14 +42,15 @@ public class JsonFeedService implements IJsonFeedService {
             URI uri = new URI(url);
             HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
             //get joke
+            
             jokeModel = new Gson().fromJson(CLIENT.send(request, HttpResponse.BodyHandlers.ofString()).body(), JokeModel.class);
         } catch (URISyntaxException | IOException | InterruptedException e) {
-            userIOHelper.printError(e.getMessage());
+            UserIOHelper.printError(e.getMessage());
         }
-        //check if successfully got joke
-        if (jokeModel.getValue() == null) {
-            return jokeModel.getMessage();
-        }
+        //check if successfully got joke dont need if category is checked before
+//        if (jokeModel.getValue() == null) {
+//            return jokeModel.getMessage();
+//        }
         String joke = jokeModel.getValue();
         //replace name
         if (firstname != null && lastname != null) {
@@ -55,7 +58,8 @@ public class JsonFeedService implements IJsonFeedService {
             joke = replaceName(joke, fullName);
         }
         //replace pronoun
-        if (gender != null && gender.equals("female")) {
+//        if (gender != null && gender.equals("female")) {
+        if ("female".equals(gender)) { //or objects.equals("female",gender)
             joke = replacePronoun(joke);
         }
         return joke;
@@ -72,7 +76,7 @@ public class JsonFeedService implements IJsonFeedService {
             HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
             names = CLIENT.send(request, HttpResponse.BodyHandlers.ofString()).body();
         } catch (URISyntaxException | IOException | InterruptedException e) {
-            userIOHelper.printError(e.getMessage());
+            UserIOHelper.printError(e.getMessage());
         }
         Gson gson = new Gson();
         return gson.fromJson(names, PersonModel.class);
@@ -86,11 +90,12 @@ public class JsonFeedService implements IJsonFeedService {
     public List<String> getCategories() {
         String responseBody = null;
         try {
-            URI uri = new URI(BASE_URL + "/categories");
-            HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
-            responseBody = CLIENT.send(request, HttpResponse.BodyHandlers.ofString()).body();
+//            URI uri = new URI(BASE_URL + "/categories");
+//            HttpRequest request = HttpRequest.newBuilder().uri(uri).build();
+//            responseBody = CLIENT.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            responseBody=requestBuilder.buildRequestAndSend(CLIENT, BASE_URL + "/categories");
         } catch (URISyntaxException | IOException | InterruptedException e) {
-            userIOHelper.printError(e.getMessage());
+            UserIOHelper.printError(e.getMessage());
         }
         return new Gson().fromJson(responseBody, ArrayList.class);
     }
@@ -126,6 +131,16 @@ public class JsonFeedService implements IJsonFeedService {
         joke = joke.replace(" Himself ", " Herself ");
         joke = joke.replace(" himself ", " herself ");
         return joke;
+    }
+
+    private boolean checkCategory(String selectedCateGory, List<String> categories) {
+            if (categories.contains(selectedCateGory)) {
+                return true;
+            }
+            return false;
+    }
+    private List<Categories> cacheCategories() {
+        return null;
     }
 
 

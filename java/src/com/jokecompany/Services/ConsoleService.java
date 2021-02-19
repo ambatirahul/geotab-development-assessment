@@ -3,9 +3,7 @@ package com.jokecompany.Services;
 import com.jokecompany.Helpers.UserIOHelper;
 import com.jokecompany.Models.PersonModel;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+
 import java.util.List;
 
 import static com.jokecompany.Constants.JsonFeedConsts.*;
@@ -13,44 +11,22 @@ import static com.jokecompany.Constants.JsonFeedConsts.*;
 public class ConsoleService implements IConsoleService {
 
     private String oneJoke;
-    private char key;
     private String fullName;
     private String firstName;
     private String lastName;
-    private UserIOHelper userIOHelper = new UserIOHelper();
     private String gender;
     private List<String> categoryResult = null;
 
-    private String selectedCategory;
+    //call the interface
+//    private IJsonFeedService jsonFeedService = new JsonFeedService();
+    private IJsonFeedService jsonFeedService;
 
-    /**
-     * Starts the console application, by prompting user instructions.
-     *
-     * @throws IOException
-     */
-    public void startJokeCompany() throws IOException {
-        BufferedReader c = new BufferedReader(new InputStreamReader(System.in));
-        userIOHelper.getUserInputAndValidate(c, "init", PROMPT_INSTRUCTION);
-        while (true) {
-            key = userIOHelper.getUserInputAndValidate(c, "cateOrJoke", PROMPT_CATAORJOKE).charAt(0);
-            if (key == 'c') {
-                getCategories();
-            }
-            if (key == 'r') {
-                key = userIOHelper.getUserInputAndValidate(c, "yesOrNo", PROMPT_RANDOMNAME).charAt(0);
-                if (key == 'y') {
-                    getNames();
-                }
-                key = userIOHelper.getUserInputAndValidate(c, "yesOrNo", PROMPT_SPICIFYCATE).charAt(0);
-                if (key == 'y') {
-                    selectedCategory = userIOHelper.getUserInputAndValidate(c, PROMPT_ENTERCATE);
-                }
-                key = userIOHelper.getUserInputAndValidate(c, "numbers", PROMPT_NUMBEROFJOKE).charAt(0);
-                int n = Character.getNumericValue(key);
-                getRandomJokes(selectedCategory, n);
-            }
-        }
+    public ConsoleService(IJsonFeedService jsonFeedService) {
+        this.jsonFeedService = jsonFeedService;
     }
+
+
+
 
     /**
      * @param category category from user input
@@ -58,13 +34,26 @@ public class ConsoleService implements IConsoleService {
      */
     @Override
     public void getRandomJokes(String category, int number) {
-        for (int i = 0; i < number; i++) {
-            if (fullName != null && !fullName.isEmpty()) {
-                oneJoke = new JsonFeedService().getRandomJokes(firstName, lastName, gender, category);
-            } else {
-                oneJoke = new JsonFeedService().getRandomJokes(null, null, null, category);
+        //if we have category cached but category is not in the list
+        if (categoryResult == null || categoryResult.isEmpty()) {
+            //note here categories will be print out again, can be fixed by passing another params but worth it?
+            System.out.println("if got category before, this message won't appear");
+            getCategories();
+        }
+        if (categoryResult.contains(category)||category==null) {
+
+            for (int i = 0; i < number; i++) {
+                if (fullName != null && !fullName.isEmpty()) {
+//                    oneJoke = new JsonFeedService().getRandomJokes(firstName, lastName, gender, category);
+                    oneJoke = jsonFeedService.getRandomJokes(firstName, lastName, gender, category);
+                } else {
+//                    oneJoke = new JsonFeedService().getRandomJokes(null, null, null, category);
+                    oneJoke = jsonFeedService.getRandomJokes(null, null, null, category);
+                }
+                UserIOHelper.printJoke(oneJoke);
             }
-            userIOHelper.printJoke(oneJoke);
+        } else {
+            UserIOHelper.printError(ERROR_INVALID_CATEGORY + category);
         }
     }
 
@@ -73,8 +62,12 @@ public class ConsoleService implements IConsoleService {
      */
     @Override
     public void getCategories() {
-        categoryResult = new JsonFeedService().getCategories();
-        userIOHelper.printCategory(categoryResult);
+        //read the cached category data if exsits
+        if(categoryResult==null) {
+//            categoryResult = new JsonFeedService().getCategories();
+            categoryResult = jsonFeedService.getCategories();
+        }
+        UserIOHelper.printCategory(categoryResult);
 
     }
 
@@ -83,7 +76,8 @@ public class ConsoleService implements IConsoleService {
      */
     @Override
     public void getNames() {
-        PersonModel personModel = new JsonFeedService().getRandomNames();
+//        PersonModel personModel = new JsonFeedService().getRandomNames();
+        PersonModel personModel = jsonFeedService.getRandomNames();
         firstName = personModel.getName();
         lastName = personModel.getSurname();
         gender = personModel.getGender();

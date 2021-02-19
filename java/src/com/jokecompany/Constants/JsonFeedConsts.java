@@ -9,7 +9,9 @@ public final class JsonFeedConsts {
     public static final String ERROR_RETRIEVING_CATES = "Error retrieving categories";
     public static final String ERROR_RETRIEVING_NAMES = "Error when getting names";
     public static final String ERROR_RETRIEVING_JOKES = "Error retrieving jokes";
+    public static final String ERROR_WRONGCATEGORY = "There's no category named ";
     public static final String ERROR_INVALID_INPUT = "Sorry, that's an invalid input.";
+    public static final String ERROR_INVALID_CATEGORY = "Sorry, there is no category: ";
 
 
     //prompts

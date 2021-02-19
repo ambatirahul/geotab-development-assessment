@@ -1,5 +1,7 @@
 package com.jokecompany.Helpers;
 
+import com.jokecompany.UserInterface;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
@@ -9,9 +11,21 @@ import java.util.Locale;
 
 import static com.jokecompany.Constants.JsonFeedConsts.*;
 
-public class UserIOHelper {
-    private final PrinterHelper PRINTER = new PrinterHelper();
-    private HashMap<String, List<Character>> validators = new HashMap<>();
+public final class UserIOHelper {
+    //instantiation now allowed
+    private UserIOHelper() {}
+
+    private static final PrinterHelper PRINTER = new PrinterHelper();
+    private static HashMap<String, List<Character>> validators = new HashMap<>();
+
+    static{
+//        HashMap<String, List<Character>> validators = new HashMap<>();
+        validators.put("init", Arrays.asList('?'));
+        validators.put("cateOrJoke", Arrays.asList('c','r', 'C','R'));
+        validators.put("yesOrNo", Arrays.asList('y','Y','n','N'));
+        validators.put("numbers", Arrays.asList('1','2','3','4','5','6','7','8','9'));
+    }
+
 
     /**
      *
@@ -20,7 +34,7 @@ public class UserIOHelper {
      * @return
      * @throws IOException
      */
-    public String getUserInputAndValidate(BufferedReader in, String message) throws IOException {
+    public static String getUserInputAndValidate(BufferedReader in, String message) throws IOException {
         PRINTER.Value(message).toString();
         String input = in.readLine().toLowerCase(Locale.ROOT);
         while (input==null||input.trim().isEmpty()) {
@@ -38,15 +52,13 @@ public class UserIOHelper {
      * @return
      * @throws IOException
      */
-    public String getUserInputAndValidate(BufferedReader in, String validator, String message) throws IOException {
-        validators.put("init", Arrays.asList('?'));
-        validators.put("cateOrJoke", Arrays.asList('c','r', 'C','R'));
-        validators.put("yesOrNo", Arrays.asList('y','Y','n','N'));
-        validators.put("numbers", Arrays.asList('1','2','3','4','5','6','7','8','9'));
+    public static String getUserInputAndValidate(BufferedReader in, String validator, String message) throws IOException {
+
 
         PRINTER.Value(message).toString();
         String input = in.readLine().toLowerCase(Locale.ROOT);
-        while (!validators.get(validator).contains(input.trim().charAt(0))) {
+        //added input empty validation
+        while (input.isEmpty()||!validators.get(validator).contains(input.trim().charAt(0))) {
             PRINTER.Value(ERROR_INVALID_INPUT + message).toString();
             input = in.readLine();
         }
@@ -57,7 +69,7 @@ public class UserIOHelper {
      *
      * @param categories list of categories returned from api call
      */
-    public void printCategory(List<String> categories) {
+    public static void printCategory(List<String> categories) {
         System.out.println(categories);
     }
 
@@ -65,7 +77,7 @@ public class UserIOHelper {
      *
      * @param joke String of 1 joke from api call
      */
-    public void printJoke(String joke) {
+    public static void printJoke(String joke) {
         System.out.println("[" + joke+ "]");
 
     }
@@ -74,7 +86,7 @@ public class UserIOHelper {
      *
      * @param exception error message from exception
      */
-    public void printError(String exception) {
+    public static void printError(String exception) {
         System.out.println(exception);
     }
 

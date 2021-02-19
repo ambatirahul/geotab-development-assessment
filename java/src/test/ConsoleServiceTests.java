@@ -10,7 +10,7 @@ public class ConsoleServiceTests {
 
     @Before
     public void setUp() {
-        this.consoleService = new ConsoleService();
+//        this.consoleService = new ConsoleService();
     }
 
     @Test
