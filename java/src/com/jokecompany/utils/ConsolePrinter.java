@@ -1,4 +1,4 @@
-package com.jokecompany;
+package com.jokecompany.utils;
 
 public class ConsolePrinter {
     public static Object PrintValue;
